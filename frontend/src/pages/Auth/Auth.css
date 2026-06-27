@@ -92,3 +92,9 @@
 .auth-footer a {
   font-weight: 500;
 }
+
+.input-hint {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin: -8px 0 16px;
+}

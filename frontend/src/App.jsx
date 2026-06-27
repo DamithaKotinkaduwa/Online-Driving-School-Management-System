@@ -12,23 +12,12 @@ import Bookings from './pages/Bookings/Bookings';
 import Quizzes from './pages/Quizzes/Quizzes';
 import AdminUsers from './pages/Admin/AdminUsers';
 
-// Placeholder Home
-const Home = () => (
-  <div className="container flex-center" style={{height: '100vh', flexDirection: 'column', gap: '20px'}}>
-    <h1>Welcome to Driving School</h1>
-    <div style={{display: 'flex', gap: '10px'}}>
-      <a href="/login" className="btn btn-primary">Login</a>
-      <a href="/register" className="btn btn-outline">Register</a>
-    </div>
-  </div>
-);
-
 function App() {
   return (
     <AuthProvider>
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Navigate to="/login" replace />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           

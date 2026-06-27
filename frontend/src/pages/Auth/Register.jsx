@@ -24,10 +24,41 @@ const Register = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const validateForm = () => {
+    const { password, phone, licenseType, role } = formData;
+
+    if (password.length < 8) {
+      return 'Password must be at least 8 characters.';
+    }
+    if (!/[A-Z]/.test(password)) {
+      return 'Password must contain at least 1 uppercase letter.';
+    }
+    if (!/[a-z]/.test(password)) {
+      return 'Password must contain at least 1 lowercase letter.';
+    }
+    if (!/[0-9]/.test(password)) {
+      return 'Password must contain at least 1 number.';
+    }
+    if (!/^\d{10}$/.test(phone)) {
+      return 'Phone number must contain exactly 10 digits (numbers only, no spaces or hyphens).';
+    }
+    if (role === 'Student' && !licenseType) {
+      return 'Please select a license type.';
+    }
+    return null;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
+
+    const validationError = validateForm();
+    if (validationError) {
+      setError(validationError);
+      setLoading(false);
+      return;
+    }
     
     const result = await register(formData);
     if (result.success) {
@@ -94,15 +125,18 @@ const Register = () => {
             onChange={handleChange}
             required
           />
+          <p className="input-hint">Minimum 8 characters, at least 1 uppercase letter, 1 lowercase letter, and 1 number.</p>
           
           <Input 
-            label="Phone Number (Optional)" 
+            label="Phone Number" 
             name="phone"
             type="tel" 
-            placeholder="+1 234 567 890"
+            placeholder="1234567890"
             value={formData.phone}
             onChange={handleChange}
+            required
           />
+          <p className="input-hint">Must contain 10 digits. Numbers only (no spaces or hyphens).</p>
 
           {formData.role === 'Student' && (
             <div className="input-group" style={{ marginBottom: '16px' }}>
@@ -112,11 +146,11 @@ const Register = () => {
                 className="input-field"
                 value={formData.licenseType} 
                 onChange={handleChange}
+                required
               >
                 <option value="">Select License Type</option>
-                <option value="Car (Class C)">Car (Class C)</option>
-                <option value="Motorcycle (Class M)">Motorcycle (Class M)</option>
-                <option value="Commercial (Class A)">Commercial (Class A)</option>
+                <option value="Light Vehicle">Light Vehicle</option>
+                <option value="Heavy Vehicle">Heavy Vehicle</option>
               </select>
             </div>
           )}

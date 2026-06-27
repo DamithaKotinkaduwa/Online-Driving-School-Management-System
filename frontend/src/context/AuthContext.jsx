@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
       u => u.email === email && u.password === password
     );
     if (!found) {
-      return { success: false, message: 'Invalid email or password. Try: admin@drive.com / admin123' };
+      return { success: false, message: 'Invalid email or password' };
     }
     const { password: _pw, ...userData } = found;
     localStorage.setItem('token', userData.token);
