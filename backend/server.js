@@ -6,7 +6,15 @@ dotenv.config();
 connectDB(); 
 const app = express(); 
 app.use(cors()); 
-app.use(express.json()); 
+app.use(express.json());
+
+app.use('/api/auth', require('./routes/authRoutes'));
+app.use('/api/users', require('./routes/userRoutes'));
+app.use('/api/instructors', require('./routes/instructorRoutes'));
+app.use('/api/bookings', require('./routes/bookingRoutes'));
+app.use('/api/quizzes', require('./routes/quizRoutes'));
+app.use('/api/reports', require('./routes/reportRoutes'));
+
 app.get("/", (req, res) => { 
 res.send("API Running"); 
 }); 
