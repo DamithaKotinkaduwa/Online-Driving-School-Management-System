@@ -1,73 +1,61 @@
 import React, { createContext, useState, useEffect } from 'react';
-import axios from 'axios';
 
 export const AuthContext = createContext();
 
+// ── Sample users (no backend needed) ──────────────────────────────────────────
+const MOCK_USERS = [
+  { id: '1', name: 'Admin User',       email: 'admin@drive.com',      password: 'admin123',      role: 'Admin',      token: 'mock-admin-token' },
+  { id: '2', name: 'Sarah Johnson',    email: 'instructor@drive.com', password: 'instructor123', role: 'Instructor', token: 'mock-instructor-token' },
+  { id: '3', name: 'John Student',     email: 'student@drive.com',    password: 'student123',    role: 'Student',    token: 'mock-student-token' },
+];
+
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser]       = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if token exists in localStorage
-    const token = localStorage.getItem('token');
-    const storedUser = localStorage.getItem('user');
-
-    if (token && storedUser) {
-      try {
-        setUser(JSON.parse(storedUser));
-      } catch(e) {
-        console.error(e);
-      }
+    const stored = localStorage.getItem('user');
+    if (stored) {
+      try { setUser(JSON.parse(stored)); } catch (e) { /* ignore */ }
     }
     setLoading(false);
   }, []);
 
   const login = async (email, password) => {
-    try {
-      const res = await axios.post('/api/auth/login', { email, password });
-      const userData = res.data;
-      
-      localStorage.setItem('token', userData.token);
-      localStorage.setItem('user', JSON.stringify(userData));
-      
-      setUser(userData);
-      
-      // Set default header
-      axios.defaults.headers.common['Authorization'] = `Bearer ${userData.token}`;
-      return { success: true };
-    } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'Login failed' 
-      };
+    const found = MOCK_USERS.find(
+      u => u.email === email && u.password === password
+    );
+    if (!found) {
+      return { success: false, message: 'Invalid email or password. Try: admin@drive.com / admin123' };
     }
+    const { password: _pw, ...userData } = found;
+    localStorage.setItem('token', userData.token);
+    localStorage.setItem('user',  JSON.stringify(userData));
+    setUser(userData);
+    return { success: true };
   };
 
-  const register = async (userData) => {
-    try {
-      const res = await axios.post('/api/auth/register', userData);
-      const newUserData = res.data;
-      
-      localStorage.setItem('token', newUserData.token);
-      localStorage.setItem('user', JSON.stringify(newUserData));
-      
-      setUser(newUserData);
-      
-      axios.defaults.headers.common['Authorization'] = `Bearer ${newUserData.token}`;
-      return { success: true };
-    } catch (error) {
-      return { 
-        success: false, 
-        message: error.response?.data?.message || 'Registration failed' 
-      };
-    }
+  const register = async (formData) => {
+    const exists = MOCK_USERS.find(u => u.email === formData.email);
+    if (exists) return { success: false, message: 'Email already in use.' };
+    const newUser = {
+      id: String(MOCK_USERS.length + 1),
+      name: formData.name,
+      email: formData.email,
+      role: formData.role,
+      token: 'mock-token-' + Date.now(),
+    };
+    MOCK_USERS.push({ ...newUser, password: formData.password });
+    localStorage.setItem('token', newUser.token);
+    localStorage.setItem('user',  JSON.stringify(newUser));
+    setUser(newUser);
+    return { success: true };
   };
 
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
     setUser(null);
-    delete axios.defaults.headers.common['Authorization'];
   };
 
   return (

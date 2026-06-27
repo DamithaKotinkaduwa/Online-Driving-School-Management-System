@@ -1,0 +1,97 @@
+.bookings-page { display: flex; flex-direction: column; gap: 24px; }
+
+.booking-tabs { display: flex; gap: 8px; }
+.btab {
+  padding: 10px 20px; border-radius: 10px;
+  border: 1px solid #E2E8F0; background: white;
+  font-size: 0.875rem; font-weight: 600; cursor: pointer;
+  display: flex; align-items: center; gap: 8px;
+  transition: all 0.15s;
+}
+.btab.active { background: #4F46E5; color: white; border-color: #4F46E5; }
+.btab:not(.active):hover { border-color: #4F46E5; color: #4F46E5; }
+.cnt {
+  background: rgba(255,255,255,0.25); padding: 1px 8px;
+  border-radius: 999px; font-size: 0.75rem;
+}
+.btab:not(.active) .cnt { background: #EEF2FF; color: #4F46E5; }
+
+/* Slots grid */
+.slots-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 1000px) { .slots-grid { grid-template-columns: repeat(2,1fr); } }
+@media (max-width: 600px)  { .slots-grid { grid-template-columns: 1fr; } }
+
+.slot-card {
+  background: white; border-radius: 14px;
+  padding: 20px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+  border: 2px solid transparent;
+  display: flex; flex-direction: column; gap: 8px;
+  transition: all 0.2s;
+}
+.slot-card:hover:not(.slot-taken) { border-color: #4F46E5; transform: translateY(-2px); }
+.slot-taken { opacity: 0.55; }
+
+.slot-date { font-size: 0.78rem; color: #94A3B8; font-weight: 500; }
+.slot-time { font-size: 1.3rem; font-weight: 700; color: #0F172A; }
+.slot-ins  { font-size: 0.82rem; color: #64748B; }
+
+.type-badge {
+  display: inline-block;
+  padding: 3px 10px; border-radius: 999px;
+  font-size: 0.72rem; font-weight: 600;
+}
+
+.slot-btn {
+  margin-top: 4px; padding: 9px;
+  border-radius: 10px; border: none;
+  font-size: 0.85rem; font-weight: 600; cursor: pointer;
+  background: #4F46E5; color: white;
+  transition: background 0.15s, transform 0.1s;
+}
+.slot-btn:hover:not(:disabled) { background: #4338CA; transform: scale(1.01); }
+.slot-btn:disabled { background: #E2E8F0; color: #94A3B8; cursor: not-allowed; }
+
+/* My Bookings table */
+.my-bookings-card { padding: 24px !important; }
+.bk-table { width: 100%; border-collapse: collapse; }
+.bk-table th {
+  text-align: left; padding: 10px 12px;
+  font-size: 0.75rem; font-weight: 600; color: #64748B;
+  border-bottom: 1px solid #E2E8F0; text-transform: uppercase; letter-spacing: 0.04em;
+}
+.bk-table td {
+  padding: 12px 12px; font-size: 0.875rem;
+  border-bottom: 1px solid #F1F5F9; vertical-align: middle;
+}
+.bk-table tr:last-child td { border-bottom: none; }
+.bk-table tr:hover td { background: #F8FAFC; }
+
+.status-badge {
+  padding: 3px 10px; border-radius: 999px;
+  font-size: 0.75rem; font-weight: 600; text-transform: capitalize;
+}
+.cancel-btn {
+  padding: 5px 12px; border-radius: 8px;
+  border: 1px solid #FEE2E2; background: transparent;
+  color: #F43F5E; font-size: 0.78rem; font-weight: 600; cursor: pointer;
+  transition: all 0.15s;
+}
+.cancel-btn:hover { background: #FEE2E2; }
+
+/* Toast */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.booking-toast {
+  position: fixed; bottom: 32px; right: 32px;
+  background: #0F172A; color: white;
+  padding: 14px 24px; border-radius: 12px;
+  font-size: 0.9rem; box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  animation: slideUp 0.3s ease-out; z-index: 999;
+}
